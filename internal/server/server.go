@@ -3,14 +3,19 @@ package server
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
+
+	//"github.com/go-chi/chi/v5/middleware"
+	"github.com/Yandex-Practicum/go1fl-sprint6-final/internal/handlers"
 )
 
-func mainHandle(res http.ResponseWriter, req *http.Request) {
-	fmt.Println("Получен запрос")
-	res.Write([]byte("Иди нахуй!"))
-}
 func HttpServer() (Err error) {
-	http.HandleFunc(`/`, mainHandle)
-	err := http.ListenAndServe(":8080", nil)
+	router := chi.NewRouter()
+	fmt.Println("Сервер стартанул")
+	router.Get("/", handlers.SimpleGetHandler)
+	router.Post("/upload", handlers.Uploader)
+
+	err := http.ListenAndServe(":8080", router)
 	return err
 }

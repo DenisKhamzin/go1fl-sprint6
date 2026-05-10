@@ -51,8 +51,6 @@ func Uploader(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		http.Error(res, "Error creating file: ", http.StatusInternalServerError)
 	}
-	// console success message that file is created
-	fmt.Println("file created")
 	// preparing response
 	res.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	res.WriteHeader(http.StatusOK)
@@ -72,6 +70,7 @@ func fileCreator(content string) error {
 	}
 	// closing created file
 	defer file.Close()
+
 	// trying to write converted text into file and check error
 	_, err = file.WriteString(content)
 	if err != nil {

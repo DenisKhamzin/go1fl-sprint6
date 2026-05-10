@@ -2,15 +2,21 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/Yandex-Practicum/go1fl-sprint6-final/internal/server"
 )
 
 func main() {
-	// starting http server from server package
-	err := server.HttpServer()
+	// creating new logger
+	logger := log.New(os.Stdout, "http-server", log.LstdFlags|log.Lshortfile)
+	// creating new http server using current logger
+	Server := server.NewServer(logger)
+
+	// server starts listening port
+	err := Server.HttpServer.ListenAndServe()
+	// logging error
 	if err != nil {
-		// log possible error
-		log.Fatal(err)
+		logger.Fatal("HTTP server doesn't start: ", err)
 	}
 }

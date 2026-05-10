@@ -1,27 +1,40 @@
 package server
 
 import (
-	"fmt"
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/Yandex-Practicum/go1fl-sprint6-final/internal/handlers"
 )
 
-func HttpServer() error {
-	// console success message that server is started
-	fmt.Println("Server is starting")
-	// handler for GET request
-	http.HandleFunc("/", handlers.SimpleGetHandler)
-	// handler for POST request
-	http.HandleFunc("/upload", func(res http.ResponseWriter, req *http.Request) {
-		// check if method is POST
-		if req.Method != http.MethodPost {
-			http.Error(res, "Wrong http-method", http.StatusMethodNotAllowed)
-			return
-		}
-		handlers.Uploader(res, req)
-	})
-	// listening 8080 port with default router
-	err := http.ListenAndServe(":8080", nil)
-	return err
+// http server struct
+type Server struct {
+	Logger     *log.Logger
+	HttpServer *http.Server
+}
+
+// function for creating server instance
+func NewServer(logger *log.Logger) *Server {
+	// creating router
+	router := http.NewServeMux()
+	// register handlers in current router
+	router.HandleFunc("/", handlers.SimpleGetHandler)
+	router.HandleFunc("/upload", handlers.Uploader)
+
+	// creating instance if server with requiremtnt params
+	serverHttp := &http.Server{
+		Addr:         ":8080",
+		Handler:      router,
+		ErrorLog:     logger,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  15 * time.Second,
+	}
+
+	// returning created instance of http server
+	return &Server{
+		Logger:     logger,
+		HttpServer: serverHttp,
+	}
 }

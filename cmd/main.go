@@ -1,17 +1,16 @@
 package main
 
 import (
-	"fmt"
-	//"log"
+	"log"
 
 	"github.com/Yandex-Practicum/go1fl-sprint6-final/internal/server"
 )
 
 func main() {
-	fmt.Println("Включаю сервер")
+	// starting http server from server package
 	err := server.HttpServer()
 	if err != nil {
-		//log.Fatal(err)
-		fmt.Println("Ошибка в main")
+		// log possible error
+		log.Fatal(err)
 	}
 }
